@@ -14,7 +14,7 @@ class PaystackService {
       baseURL: config.paystack.baseUrl,
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${config.paystack.publicKey}`,
+        authorization: `Bearer ${config.paystack.secretKey}`,
       },
     });
   }
