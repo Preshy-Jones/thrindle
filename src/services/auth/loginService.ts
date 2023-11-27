@@ -18,7 +18,7 @@ export const loginService = async (email: string, password: string) => {
 
   return {
     accessToken: token,
-    // user: user,
+    user: user,
     // payload,
   };
 };

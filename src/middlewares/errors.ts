@@ -13,9 +13,9 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("dhdh");
+  // console.log("dhdh");
 
-  console.log(`res.headersSent: ${res.headersSent}`);
+  // console.log(`res.headersSent: ${res.headersSent}`);
   // console.log(err.name);
   if (res.headersSent) {
     return next(err);

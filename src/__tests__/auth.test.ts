@@ -1,26 +1,84 @@
 import supertest from "supertest";
 import createServer from "../utils/createServer";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
+import UserModel from "../models/User";
 
 const app = createServer();
 
-describe("Login Route", () => {
-  it("should return success when valid credentials are provided", async () => {
-    
-    const response = await supertest(app)
-      .post("/login")
-      .send({ username: "user", password: "password" });
+describe("Register and login", () => {
+  beforeAll(async () => {
+    const mongoServer = await MongoMemoryServer.create();
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Login successful");
+    await mongoose.connect(mongoServer.getUri());
   });
 
-  it("should return unauthorized when invalid credentials are provided", async () => {
-    const response = await supertest(app)
-      .post("/login")
-      .send({ username: "invalid", password: "invalid" });
+  afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoose.connection.close();
+  });
+  beforeEach(async () => {
+    // Clear the database before each test
+    await mongoose.connection.db.dropDatabase();
+  });
 
-    expect(response.status).toBe(401);
-    expect(response.body.message).toBe("Login failed");
+  describe("Register route", () => {
+    describe("When valid input fields are passed", () => {
+      it("should register a new user", async () => {
+        const { body, statusCode } = await supertest(app)
+          .post("/api/user/signup")
+          .send({
+            firstName: "testuser",
+            lastName: "testpassword",
+            email: "adedibuprecious@gmail.com",
+            password: "Sharingan066@",
+            confirmPassword: "Sharingan066@",
+          });
+
+        expect(statusCode).toBe(200);
+        expect(body.message).toBe("User registered successfully");
+      });
+    });
+  });
+
+  describe("Login route", () => {
+    describe("When valid credentials are provided", () => {
+      it("should return success", async () => {
+        const { body, statusCode } = await supertest(app)
+          .post("/api/auth/login")
+          .send({
+            email: "adedibuprecious@gmail.com",
+            password: "Sharingan066@",
+          });
+
+        expect(statusCode).toBe(200);
+
+        // console.log(
+        //   "hello there   there   there   there   there   therehello hellohello hello"
+        // );
+        // console.log(body);
+
+        expect(body.message).toBe("Logged in successfully");
+      });
+    });
+    describe("When invalid credentials are provided", () => {
+      it("should return unauthorized ", async () => {
+        const { body, statusCode } = await supertest(app)
+        .post("/api/auth/login")
+        .send({
+          email: "adedibuprecious@gmail.com",
+          password: "Sharingan066@",
+        });
+
+        console.log(
+          "hello hello hello hello hello hellohello hellohello hello"
+        );
+        console.log(body);
+
+        expect(statusCode).toBe(401);
+        expect(body.message).toBe("Invalid credentials");
+      });
+    });
   });
 });
 

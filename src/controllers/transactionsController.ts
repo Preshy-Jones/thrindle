@@ -13,6 +13,8 @@ export const initiateTransaction = async (
   next: NextFunction
 ) => {
   const userId = req.user;
+  // console.log(userId);
+
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -27,12 +29,16 @@ export const initiateTransaction = async (
       amount,
       description,
     });
-    await transaction.save();
 
-    const response = paystackService.initiateTransaction({
+    const response = await paystackService.initiateTransaction({
       amount,
       email: user.email,
       reference: transaction._id,
+    });
+
+    transaction.transactionReference = response.reference;
+    await transaction.save({
+      session,
     });
 
     return res.send(

@@ -1,33 +1,7 @@
-import supertest from "supertest";
-import createServer from "../utils/createServer";
+function sum(a: number, b: number) {
+  return a + b;
+}
 
-const app = createServer();
-
-describe("Initiate transaction routeRoute", () => {
-  it("should return success when valid credentials are provided", async () => {
-    
-    const response = await supertest(app)
-      .post("/login")
-      .send({ username: "user", password: "password" });
-
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Login successful");
-  });
-
-  it("should return unauthorized when invalid credentials are provided", async () => {
-    const response = await supertest(app)
-      .post("/login")
-      .send({ username: "invalid", password: "invalid" });
-
-    expect(response.status).toBe(401);
-    expect(response.body.message).toBe("Login failed");
-  });
+test("adds 1 + 2 to equal 3", () => {
+  expect(sum(1, 2)).toBe(3);
 });
-
-// function sum(a, b) {
-//   return a + b;
-// }
-
-// test("adds 1 + 2 to equal 3", () => {
-//   expect(sum(1, 2)).toBe(3);
-// });

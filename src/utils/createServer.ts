@@ -1,7 +1,6 @@
 import "dotenv/config";
 import express from "express";
 import compression from "compression";
-import { errorHandler, notFoundHandler } from "../middlewares/errors";
 import authRoutes from "../routes/auth";
 import transactionsRoutes from "../routes/transactions";
 import userRoutes from "../routes/user";

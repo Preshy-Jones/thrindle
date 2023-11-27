@@ -4,6 +4,7 @@ import { successResponse } from "../utils";
 import { SignUpInput } from "../validation/user.schema";
 import UserModel from "../models/User";
 import { ConflictError } from "../errors";
+import { createUser } from "../services/user/signUpUserServices";
 
 export const signupHandler = async (
   req: Request<{}, {}, SignUpInput["body"]>,
@@ -13,20 +14,8 @@ export const signupHandler = async (
   try {
     const { email, firstName, lastName, password } = req.body;
 
-    const user = await UserModel.findOne({ email: email });
-    if (user) {
-      // errors.push({ message: "Email is already registered" });
-      throw new ConflictError("Email is already registered");
-    }
-    const newUser = new UserModel({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    console.log(newUser);
-    newUser.save();
-    return res.send(successResponse("User registered successfully", newUser));
+    const user = await createUser(req.body);
+    return res.send(successResponse("User registered successfully", user));
   } catch (error) {
     next(error);
   }

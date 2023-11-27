@@ -4,6 +4,7 @@ import {
   initiateTransactionPayload,
   initiateTransactionResponse,
 } from "../types/paystack";
+import { ServiceError } from "../errors";
 
 class PaystackService {
   client: any;
@@ -13,7 +14,7 @@ class PaystackService {
       baseURL: config.paystack.baseUrl,
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${config.paystack.secretKey}`,
+        authorization: `Bearer ${config.paystack.publicKey}`,
       },
     });
   }
@@ -26,11 +27,17 @@ class PaystackService {
     payload: initiateTransactionPayload
   ): Promise<initiateTransactionResponse> {
     try {
-      const response = await this.client.post("/transaction/initialize", {});
+      const response = await this.client.post(
+        "/transaction/initialize",
+        payload
+      );
       let data = response.data;
+
+      console.log(data);
       return data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.log(error.response.data);
+      throw new ServiceError("paystack error: " + error.response.data.message);
     }
   }
 }

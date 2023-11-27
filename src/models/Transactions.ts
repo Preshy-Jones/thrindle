@@ -13,6 +13,7 @@ export interface TransactionDocument
     mongoose.Document {
   status: TransactionStatus;
   thirdPartyTransactionId: number;
+  transactionReference: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,11 +24,17 @@ const transactionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     thirdPartyTransactionId: {
       type: Number,
+    },
+    transactionReference: {
+      type: String,
+    },
+    description: {
+      type: String,
       required: true,
     },
     status: {
       type: String,
-      enum:TransactionStatus,
+      enum: TransactionStatus,
       required: true,
       default: TransactionStatus.PENDING,
     },
