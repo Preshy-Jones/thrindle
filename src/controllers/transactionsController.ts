@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { InitiateTransactionInput } from "../validation/transaction.schema";
+import {
+  GetTransactionHistoryInput,
+  InitiateTransactionInput,
+} from "../validation/transaction.schema";
 import { NotFoundError } from "../errors";
 import UserModel from "../models/User";
 import paystackService from "../lib/paystack";
@@ -30,6 +33,7 @@ export const initiateTransaction = async (
       amount,
       description,
       transactionReference,
+      user: userId,
     });
 
     const response = await paystackService.initiateTransaction({
@@ -56,17 +60,34 @@ export const initiateTransaction = async (
 
 export const verifyTranaction = () => {};
 
-export const getTransactionHistory = (
-  req: Request,
+export const getTransactionHistory = async (
+  req: Request<GetTransactionHistoryInput["query"]>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const userId = req.user;
 
-    const transactions = TransactionModel.findOne({
-      user: userId,
-    });
+    const { status } = req.query;
+    console.log(status);
+
+    const queryPayload: {
+      user: string;
+      status?: string;
+    } = {
+      user: userId as string,
+    };
+
+    if (status) {
+      queryPayload.status = status as string;
+    }
+
+    console.log(queryPayload);
+
+    const transactions = await TransactionModel.find(queryPayload);
+    return res.send(
+      successResponse("Transactions fetched successfully", transactions)
+    );
   } catch (error) {
     next(error);
   }

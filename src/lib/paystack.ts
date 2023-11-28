@@ -33,8 +33,8 @@ class PaystackService {
       );
       let data = response.data;
 
-      console.log(data);
-      return data;
+      // console.log(data);
+      return data.data;
     } catch (error: any) {
       console.log(error.response.data);
       throw new ServiceError("paystack error: " + error.response.data.message);
