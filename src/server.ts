@@ -8,7 +8,7 @@ import { errorHandler, notFoundHandler } from "./middlewares/errors";
 
 const app = createServer();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8000;
 
 swaggerDocs(app, PORT);
 
