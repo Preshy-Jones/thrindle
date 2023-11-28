@@ -1,5 +1,6 @@
 import config from "../config";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 export const successResponse = (message: string, data: any) => {
   return {
@@ -30,3 +31,15 @@ export async function generateJWTToken(
     );
   });
 }
+
+export const generateTransactionReference = (length: number): string => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const randomBytes = crypto.randomBytes(length);
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = randomBytes[i] % characters.length;
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+};

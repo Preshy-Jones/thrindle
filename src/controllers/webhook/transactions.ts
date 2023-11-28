@@ -3,8 +3,9 @@ import crypto from "crypto";
 import config from "../../config";
 import TransactionModel from "../../models/Transactions";
 import { PaystackWebHookResponse } from "../../types/paystack";
+import { TransactionStatus } from "../../types/transaction";
 
-export const confirmTransaction = (
+export const confirmTransaction = async (
   req: Request<{}, {}, PaystackWebHookResponse>,
   res: Response,
   next: NextFunction
@@ -17,12 +18,20 @@ export const confirmTransaction = (
     return res.sendStatus(400);
   }
   if (eventData.event === "charge.success") {
-    const { id, amount } = eventData.data;
+    const { id, amount, reference } = eventData.data;
     // const newTransaction = new TransactionModel({
     //   thirdPartyTransactionId: id,
     //   amount,
     // });
     console.log(eventData);
+    const transaction = await TransactionModel.findOne({
+      transactionReference: reference,
+    });
+    if (transaction) {
+      transaction.status = TransactionStatus.SUCCESS;
+    }
+
+    
   }
   res.send(200);
 };

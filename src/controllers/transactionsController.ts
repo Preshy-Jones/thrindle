@@ -3,7 +3,7 @@ import { InitiateTransactionInput } from "../validation/transaction.schema";
 import { NotFoundError } from "../errors";
 import UserModel from "../models/User";
 import paystackService from "../lib/paystack";
-import { successResponse } from "../utils";
+import { generateTransactionReference, successResponse } from "../utils";
 import TransactionModel from "../models/Transactions";
 import mongoose from "mongoose";
 
@@ -25,15 +25,17 @@ export const initiateTransaction = async (
       throw new NotFoundError("User not found");
     }
 
+    const transactionReference = generateTransactionReference(10);
     const transaction = new TransactionModel({
       amount,
       description,
+      transactionReference,
     });
 
     const response = await paystackService.initiateTransaction({
       amount,
       email: user.email,
-      reference: transaction._id,
+      reference: transactionReference,
     });
 
     transaction.transactionReference = response.reference;
