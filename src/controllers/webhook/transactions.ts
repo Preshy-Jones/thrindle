@@ -29,7 +29,7 @@ export const confirmTransaction = async (
     });
     if (transaction) {
       transaction.status = TransactionStatus.SUCCESS;
-      transaction.save();
+      await transaction.save();
     }
   }
   return res.sendStatus(200);
