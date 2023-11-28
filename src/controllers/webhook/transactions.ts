@@ -29,11 +29,10 @@ export const confirmTransaction = async (
     });
     if (transaction) {
       transaction.status = TransactionStatus.SUCCESS;
+      transaction.save();
     }
-
-
   }
-  res.send(200);
+  return res.sendStatus(200);
 };
 
 const verify = (eventData: any, signature: string): boolean => {
