@@ -42,7 +42,8 @@ export const initiateTransaction = async (
     await transaction.save({
       session,
     });
-
+    await session.commitTransaction();
+    session.endSession();
     return res.send(
       successResponse("Transaction initiated successfully", response)
     );

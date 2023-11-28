@@ -11,7 +11,7 @@ export const confirmTransaction = async (
   next: NextFunction
 ) => {
   const eventData = req.body;
-  console.log(eventData);
+  // console.log(eventData);
   const signature = req.headers["x-paystack-signature"] as string;
 
   if (!verify(eventData, signature)) {
@@ -31,7 +31,7 @@ export const confirmTransaction = async (
       transaction.status = TransactionStatus.SUCCESS;
     }
 
-    
+
   }
   res.send(200);
 };
